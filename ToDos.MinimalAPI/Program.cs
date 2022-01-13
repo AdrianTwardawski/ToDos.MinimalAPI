@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Mvc;
+using ToDos.MinimalAPI;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<IToDoService, ToDoService>();
 
 var app = builder.Build();
 
@@ -16,28 +20,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-       new WeatherForecast
-       (
-           DateTime.Now.AddDays(index),
-           Random.Shared.Next(-20, 55),
-           summaries[Random.Shared.Next(summaries.Length)]
-       ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapGet("/todos", (IToDoService service) => service.GetAll());
+app.MapGet("/todos/{id}", ([FromServices]IToDoService service, [FromRoute]Guid id) => service.GetById(id));
+app.MapPost("/todos", (IToDoService service, [FromBody]ToDo toDo) => service.Create(toDo));
+app.MapPut("/todos/{id}", (IToDoService service, [FromRoute]Guid id, [FromBody]ToDo toDo) => service.Update(toDo));
+app.MapDelete("/todos/{id}", (IToDoService service, Guid id) => service.Delete(id));
 
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
