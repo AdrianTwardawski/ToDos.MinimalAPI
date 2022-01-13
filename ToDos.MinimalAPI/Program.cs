@@ -20,16 +20,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-//app.MapGet("/todos", (IToDoService service) => service.GetAll());
-//app.MapGet("/todos", ToDoRequests.GetAll);
-//app.MapGet("/todos/{id}", ([FromServices]IToDoService service, [FromRoute]Guid id) => service.GetById(id));
-//app.MapGet("/todos/{id}", ToDoRequests.GetById);
-//app.MapPost("/todos", (IToDoService service, [FromBody]ToDo toDo) => service.Create(toDo));
-//app.MapPost("/todos", ToDoRequests.Create);
-//app.MapPut("/todos/{id}", (IToDoService service, [FromRoute]Guid id, [FromBody]ToDo toDo) => service.Update(toDo));
-//app.MapPut("/todos/{id}", ToDoRequests.Update);
-//app.MapDelete("/todos/{id}", (IToDoService service, Guid id) => service.Delete(id));
-//app.MapDelete("/todos/{id}", ToDoRequests.Delete);
 app.RegisterEndpoints();
 app.Run();
